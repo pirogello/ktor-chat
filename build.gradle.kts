@@ -33,6 +33,7 @@ dependencies {
     implementation("io.ktor:ktor-server-content-negotiation-jvm")
     implementation("io.ktor:ktor-server-config-yaml:2.3.6")
     implementation("io.ktor:ktor-server-netty-jvm")
+    implementation("io.ktor:ktor-server-websockets-jvm:$ktor_version")
 
     // db dependency
     implementation("org.jetbrains.exposed:exposed-core:$exposed_version")
@@ -47,7 +48,8 @@ dependencies {
     // jwt dependency
     implementation("io.ktor:ktor-server-auth:$ktor_version")
     implementation("io.ktor:ktor-server-auth-jwt:$ktor_version")
-    // bcrypt
+
+    // bcrypt dependency
     implementation("org.mindrot:jbcrypt:0.4")
 
     // test dependency
