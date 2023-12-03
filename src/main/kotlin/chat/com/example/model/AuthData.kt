@@ -6,6 +6,7 @@ import kotlinx.serialization.Serializable
 data class CreateJwtTokenResponse(
     val isSuccess: Boolean,
     val token: String,
+    val id: Int,
     val username: String
 )
 

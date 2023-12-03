@@ -4,7 +4,6 @@ import chat.com.example.dao.UserDao
 import chat.com.example.model.CreateUserRequest
 import chat.com.example.model.User
 import chat.com.example.model.UserResponse
-import org.mindrot.jbcrypt.BCrypt
 
 
 class UserServiceImpl (

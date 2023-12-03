@@ -28,7 +28,9 @@ fun Application.configureAuthentication(environment: ApplicationEnvironment) {
 
             // validate
             validate { credential ->
-                if (credential.payload.getClaim("userName").asString().isNotEmpty()) {
+                val username = credential.payload.getClaim("userName").asString()
+                val id = credential.payload.getClaim("id").asInt()
+                if (username.isNotEmpty() && id != null) {
                     JWTPrincipal(credential.payload)
                 } else {
                     null

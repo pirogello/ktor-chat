@@ -4,7 +4,6 @@ import chat.com.example.model.CreateUserRequest
 import chat.com.example.service.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.auth.*
 import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
@@ -12,30 +11,31 @@ import io.ktor.server.routing.*
 fun Route.user(
     userService: UserService
 ) {
-    route("/api/users"){
+    route("/api/users") {
         get {
             call.respond(userService.getUsers())
         }
-        authenticate {
-            get("/{id}"){
-                val id = call.parameters["id"]?.toInt() ?: throw IllegalStateException("Numeric ID required")
-                val user = userService.getUserById(id)
-                if(user == null){
-                    call.respond(HttpStatusCode.NotFound)
-                } else {
-                    call.respond(user)
-                }
+
+        get("/{id}") {
+            val id = call.parameters["id"]?.toInt() ?: throw IllegalStateException("Numeric ID required")
+            val user = userService.getUserById(id)
+            if (user == null) {
+                call.respond(HttpStatusCode.NotFound)
+            } else {
+                call.respond(user)
             }
         }
 
-        post{
+        post {
             val dto = call.receive<CreateUserRequest>()
             try {
                 userService.createUser(dto)
                 call.respond(HttpStatusCode.Created)
-            } catch (e: Exception){
+            } catch (e: Exception) {
                 call.respond(HttpStatusCode.BadRequest, e.message.toString())
             }
         }
     }
+
+
 }

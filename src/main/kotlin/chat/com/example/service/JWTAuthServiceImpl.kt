@@ -26,10 +26,11 @@ class JWTAuthServiceImpl(
             .withAudience(audience)
             .withIssuer(issuer)
             .withClaim("userName", username)
+            .withClaim("id", user.id)
             .withExpiresAt(Instant.ofEpochMilli(System.currentTimeMillis() + expired))
             .sign(Algorithm.HMAC256(secret))
 
-        return  CreateJwtTokenResponse(isSuccess = true, token = generatedToken, username = username)
+        return  CreateJwtTokenResponse(isSuccess = true, token = generatedToken, username = username, id = user.id)
     }
 
 }
