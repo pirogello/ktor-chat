@@ -30,7 +30,8 @@ fun Application.configureRoutes(environment: ApplicationEnvironment) {
             userService
         )
         chat(
-            chatService
+            chatService,
+            messageService
         )
         message(
             messageService

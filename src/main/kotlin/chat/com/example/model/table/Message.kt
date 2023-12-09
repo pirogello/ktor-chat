@@ -9,8 +9,8 @@ import java.time.LocalDateTime
 
 object Messages : Table(name = "t_messages") {
     val id = integer("id").autoIncrement()
-    val chatId = reference("chat_id", Chats.id).uniqueIndex()
-    val senderId = reference("sender_id", Users.id).uniqueIndex()
+    val chatId = reference("chat_id", Chats.id)
+    val senderId = reference("sender_id", Users.id)
     val content = varchar("content", length = 250)
     val createdAt = datetime("created_at").defaultExpression(CurrentDateTime)
 

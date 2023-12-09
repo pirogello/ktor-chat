@@ -2,6 +2,7 @@ package chat.com.example.routes
 
 import chat.com.example.model.CreateChatRequest
 import chat.com.example.model.JoinOrLeaveChatRequest
+import chat.com.example.model.Message
 import chat.com.example.service.ChatService
 import chat.com.example.service.MessageService
 import chat.com.example.util.Connection
@@ -14,9 +15,9 @@ import io.ktor.server.response.*
 import io.ktor.server.routing.*
 import io.ktor.server.websocket.*
 import io.ktor.websocket.*
+import kotlinx.coroutines.async
+import kotlinx.serialization.json.Json
 import java.util.*
-import kotlin.collections.HashMap
-import kotlin.collections.HashSet
 
 fun Route.chat(
     chatService: ChatService,
@@ -62,17 +63,26 @@ fun Route.chat(
                 if(!connections.containsKey(chatId)) connections[chatId] = HashSet()
                 val thisConnection = Connection(this, principalId, principalUsername)
                 connections[chatId]?.add(thisConnection)
+                val prevMessages = messageService. getMessagesByChatId(chatId)
+                for (m in prevMessages)
+                    sendSerialized(m)
+
                 try {
                     for (frame in incoming) {
                         frame as? Frame.Text ?: continue
                         val receivedText = frame.readText()
-                        // save message to db
-                        messageService.createMessage(chatId = chatId, senderId = principalId, content = receivedText)
-                        // send message to all users in chat with id=chatId
-                        connections[chatId]?.forEach {
-                            if(it.session != thisConnection.session)
-                                it.session.send("from user($principalUsername): $receivedText\n")
-                        }
+                            val message = async {
+                                messageService.createMessage(
+                                    chatId = chatId,
+                                    senderId = principalId,
+                                    content = receivedText
+                                )
+                            }
+                            val json = Json.encodeToString(Message.serializer(), message.await())
+                            connections[chatId]?.forEach {
+                                if(it.session != thisConnection.session)
+                                    it.session.send(json)
+                            }
                     }
                 } catch (e: Exception) {
                     println(e.localizedMessage)

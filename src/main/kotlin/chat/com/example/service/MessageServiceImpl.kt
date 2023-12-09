@@ -10,7 +10,7 @@ class MessageServiceImpl(
         return messageDao.getMessagesByChatId(chatId)
     }
 
-    override suspend fun createMessage(chatId: Int, senderId: Int, content: String) {
+    override suspend fun createMessage(chatId: Int, senderId: Int, content: String): Message {
         return messageDao.createMessage(chatId, senderId, content)
     }
 }
