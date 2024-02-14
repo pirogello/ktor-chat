@@ -2,9 +2,12 @@ package chat.com.example.service
 
 import chat.com.example.dao.ChatDao
 import chat.com.example.dao.UserDao
-import chat.com.example.model.ChatWithParticipantsResponse
-import chat.com.example.model.CreateChatRequest
-import chat.com.example.model.JoinOrLeaveChatRequest
+import chat.com.example.model.*
+import io.ktor.server.auth.jwt.*
+import io.ktor.websocket.*
+import kotlinx.coroutines.async
+import kotlinx.coroutines.channels.ReceiveChannel
+import kotlinx.serialization.json.Json
 
 class ChatServiceImpl(
     private val chatDao: ChatDao,
@@ -29,5 +32,11 @@ class ChatServiceImpl(
 
     override suspend fun getChat(id: Int): ChatWithParticipantsResponse? {
         return chatDao.getChat(id)
+    }
+
+    override suspend fun getUserFromChat(principal: JWTPrincipal, chatId: Int): UserResponse? {
+        val principalId = principal.payload.getClaim("id")?.asInt() ?: throw Exception("No principal or claim(id)")
+        val participants = getChat(chatId)?.participants ?: emptyList()
+        return if (participants.isNotEmpty()) participants.find { it.id == principalId } else null
     }
 }

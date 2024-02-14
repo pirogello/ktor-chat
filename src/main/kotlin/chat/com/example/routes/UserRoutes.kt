@@ -1,10 +1,8 @@
 package chat.com.example.routes
 
-import chat.com.example.model.CreateUserRequest
 import chat.com.example.service.UserService
 import io.ktor.http.*
 import io.ktor.server.application.*
-import io.ktor.server.request.*
 import io.ktor.server.response.*
 import io.ktor.server.routing.*
 
@@ -26,15 +24,15 @@ fun Route.user(
             }
         }
 
-        post {
-            val dto = call.receive<CreateUserRequest>()
-            try {
-                userService.createUser(dto)
-                call.respond(HttpStatusCode.Created)
-            } catch (e: Exception) {
-                call.respond(HttpStatusCode.BadRequest, e.message.toString())
-            }
-        }
+//        post {
+//            val dto = call.receive<CreateUserRequest>()
+//            try {
+//                userService.createUser(dto)
+//                call.respond(HttpStatusCode.Created)
+//            } catch (e: Exception) {
+//                call.respond(HttpStatusCode.BadRequest, e.message.toString())
+//            }
+//        }
     }
 
 
